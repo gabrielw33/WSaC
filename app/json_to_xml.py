@@ -5,7 +5,7 @@ import argparse
 import Function as F
 
 
-def Json_to_xml(_json, _xml, _id="mxb"):
+def Json_to_xmlF(_json, _xml, _id="mxb"):
     tree = ET.parse(str(_xml))
     root = tree.getroot()
 

@@ -1,4 +1,3 @@
-import json_to_xml
 
 from flask import Flask
 from flask import render_template
