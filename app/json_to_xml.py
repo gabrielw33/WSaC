@@ -5,8 +5,10 @@ import argparse
 import Function as F
 
 
-def Json_to_xmlF(_json, _xml, _id="mxb"):
-    tree = ET.parse(str(_xml))
+def Json_to_xml(_json, _xml, _id="mxb"):
+    if _id == '':
+        _id ="mxb"
+    tree = ET.parse(_xml)
     root = tree.getroot()
 
     with open(_json) as json_file:
@@ -19,4 +21,4 @@ def Json_to_xmlF(_json, _xml, _id="mxb"):
                 root.find('nvm'), 'param', F.DictForParamTAG(k, v))
 
     root.set('productID', str(_id))
-    tree.write('max4.xml')
+    tree.write('app/max4.xml')

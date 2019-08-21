@@ -14,11 +14,11 @@ def Url_to_json(url,reg):
         key = match.group()
         dictionary[key] = -2
         
-    json = json.dumps(dictionary, indent=4)
-    f = open("dict2.json", "w")
-    f.write(json)
+    fjson = json.dumps(dictionary, indent=4)
+    f = open("app/dict.json", "w")
+    f.write(fjson)
     f.close()
-
+    print("ok")
 
     
 

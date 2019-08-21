@@ -1,54 +1,76 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>GitMatched</title>
+
+<head>
+    <title>Converer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
-  </head>
-  <body>
+</head>
+
+<body>
     <div class="container">
         <h1>
-        {{ pp }}
+
         </h1>
         <br>
         <div id=StJ>
-            <form role="form" method="POST" action="{{ url_for('url_to_json') }}" >
+            <form role="form" method="POST" action="{{ url_for('url_to_json') }}">
                 <table>
                     <tr>
-                        <td><p>opcja</p></td>
-                        <td><p >Url</p></td>
-                        <td><p >RegExp</p></td>
-                       
-                    </tr>
-                    <tr>
-                        <td><button name = "B_StJ" type="submit" class="btn btn-success" id="try-again">Source to Json</button> </td>
-                        <td><input  name = "T_Url" type="text" name="nazwa"> </td>
-                        <td><input  name = "T_RegExp" type="text" name="nazwa"> </td>
-                    </tr>
-                </table>
-            </form>    
-        </div>
-        <div id=JtX>
-            <form role="form" method="POST" action="{{ url_for('json_to_xml') }}" >
-                <table>
-                    <tr>
-                        <td><p>opcja</p></td>
-                        <td><p>Json</p></td>
-                        <td><p>XML</p></td>
-                        <td><p>ID</p></td>
-                    </tr>
-                    <tr>
-                        <td><button name = B_JtX type="submit" class="btn btn-primary">Jsonto Xml  </button></td>
-                        <td><input name = F_json  class="file" type="file" name="nazwa"></td>
-                        <td><input name = F_xml class="flie" type="file" name="nazwa"></td>
-                        <td><input name = T_uid type="text" name="nazwa"> </td>
+                        <td>
+                            <p>Convert</p>
+                        </td>
+                        <td>
+                            <p>Url</p>
+                        </td>
+                        <td>
+                            <p>RegExp</p>
+                        </td>
 
                     </tr>
+                    <tr>
+                        <td><button name="B_StJ" type="submit" class="btn btn-success" id="try-again">Source to
+                                Json</button> </td>
+                        <td><input name="T_Url" type="text"> </td>
+                        <td><input name="T_RegExp" type="text"> </td>
+                    </tr>
                 </table>
-            </form>    
+            </form>
+            <h2>
+                Dowloand
+            </h2>
         </div>
-        <div id=StX>
+        <div id=JtX>
+            <form role="form" method="POST" action="{{ url_for('json_to_xml') }}" enctype=multipart/form-data> <table>
+                <tr>
+                    <td>
+                        <p>Convert</p>
+                    </td>
+                    <td>
+                        <p>Json</p>
+                    </td>
+                    <td>
+                        <p>XML</p>
+                    </td>
+                    <td>
+                        <p>ID</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td><button name=B_JtX type="submit" class="btn btn-primary">Json to Xml </button></td>
+                    <td><input name=F_json class="file" type="file"></td>
+                    <td><input name=F_xml class="flie" type="file"></td>
+                    <td><input name=T_uid type="text"> </td>
+
+                </tr>
+                </table>
+            </form>
+            <h1>
+                Converting ..
+            </h1>
+        </div>
+        <!--     <div id=StX>
             <form role="form" method="post" onsubmit="return false;">
                 <table>
                     <tr>
@@ -64,15 +86,12 @@
                     </tr>
                 </table>                
             </form>    
-        </div>      
-        <br>
-        <div id="results"></div>
-        {{url}}
-        {{regex}}
-        {{uid}}
+        </div> -->
        
+        
+
     </div>
-    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script src={{ url_for('static', filename='main.js') }}></script>
-  </body>
+ 
+</body>
+
 </html>

@@ -1,16 +1,15 @@
 #StJ{
-    background-color: aquamarine;
-    
+    border-radius: 25px;
+    background-color:#00f500;
+    padding: 20px;
+
 }
 
 #JtX{
+    border-radius: 25px;
     background-color: aquamarine;
-
+    padding: 20px;
 }
-#StX{
-    background-color: aquamarine;
-} 
-
 
 button{
     width: 200px
