@@ -28,9 +28,7 @@ def index():
 
 @app.route('/url_to_json', methods=['GET', 'POST'])
 def url_to_json():
-
     if request.method == 'POST':
-
         if ('T_Url' not in request.form) or ('T_RegExp' not in request.form):
             return redirect(request.url)
 
@@ -42,9 +40,7 @@ def url_to_json():
 
             return redirect(request.url)
 
-        Url_to_json(url, regex)
-
-        path = "dict.json"
+        path = Url_to_json(url, regex)
 
         return send_file(path, as_attachment=True)
 
@@ -57,8 +53,6 @@ def json_to_xml():
     xml = None
     uid = None
     if request.method == 'POST':
-        print("cos")
-
         if 'F_json' not in request.files:
             flash('No file part')
 
@@ -67,7 +61,7 @@ def json_to_xml():
         json = request.files['F_json']
 
         if json.filename == '':
-            flash('No selected file')
+            flash('No file selected ')
             return redirect(request.url)
 
         if json and allowed_file(json.filename):
