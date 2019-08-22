@@ -1,5 +1,0 @@
-<provisioning productID="mm" version="1.1">
-<nvm>
-<param name="SIP.Account.4.AllowRouteHeaders" value="0" />
-<param name="charset" value="2" /><param name="3" value="89" /><param name="text" value="66" /></nvm>
-</provisioning>
