@@ -9,10 +9,19 @@ from flask import flash, redirect, url_for, request
 
 UPLOAD_FOLDER = 'target/'
 ALLOWED_EXTENSIONS = {'json', 'xml'}
+Path = ""
 
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def create_download(p):
+    Path = p
+
+
+def Download(p):
+    return send_file(p, as_attachment=True)
 
 
 app = Flask(__name__)
@@ -43,13 +52,13 @@ def url_to_json():
             return redirect(request.url)
 
         path = Url_to_json(url, regex, app.config['json_file'])
-        
+
         if path == "wrong url":
             flash(path)
             return redirect(request.url)
 
         flash('')
-        return send_file(path, as_attachment=True ,cache_timeout=0)
+        create_download(path)
 
     return render_template('index.html')
 
@@ -91,9 +100,18 @@ def json_to_xml():
         uid = request.form['T_uid']
 
         Json_to_xml(app.config['json_file'], app.config['xml_file'], xml, uid)
-        
+
         flash('')
         return send_file(app.config['xml_file'], as_attachment=True)
+
+    return render_template('index.html')
+
+
+@app.route('/Download_b', methods=['GET', 'POST'])
+def Download_b():
+
+    if Path not == "":
+        return Download(Path)
 
     return render_template('index.html')
 
