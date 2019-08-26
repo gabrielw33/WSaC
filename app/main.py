@@ -1,13 +1,13 @@
 import os
+from flask import Flask
+from flask import send_file
+from flask import render_template
 from url_to_json import Url_to_json
 from json_to_xml import Json_to_xml
-from flask import Flask
-from flask import render_template
-from flask import flash, redirect, url_for, request
-from flask import send_file
 from werkzeug.utils import secure_filename
+from flask import flash, redirect, url_for, request
 
-UPLOAD_FOLDER = 'app/'
+UPLOAD_FOLDER = 'target/'
 ALLOWED_EXTENSIONS = {'json', 'xml'}
 
 
@@ -18,6 +18,8 @@ def allowed_file(filename):
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['json_file'] = app.config['UPLOAD_FOLDER'] + 'dict.json'
+app.config['xml_file'] = app.config['UPLOAD_FOLDER'] + 'config.xml'
 app.secret_key = b'_5#23s/c1D#2/3ec]/'
 
 
@@ -28,9 +30,7 @@ def index():
 
 @app.route('/url_to_json', methods=['GET', 'POST'])
 def url_to_json():
-
     if request.method == 'POST':
-
         if ('T_Url' not in request.form) or ('T_RegExp' not in request.form):
             return redirect(request.url)
 
@@ -42,9 +42,7 @@ def url_to_json():
 
             return redirect(request.url)
 
-        Url_to_json(url, regex)
-
-        path = "dict.json"
+        path = Url_to_json(url, regex)
 
         return send_file(path, as_attachment=True)
 
@@ -57,22 +55,19 @@ def json_to_xml():
     xml = None
     uid = None
     if request.method == 'POST':
-        print("cos")
-
         if 'F_json' not in request.files:
             flash('No file part')
-
             return redirect(request.url)
 
         json = request.files['F_json']
 
         if json.filename == '':
-            flash('No selected file')
+            flash('No file selected ')
             return redirect(request.url)
 
         if json and allowed_file(json.filename):
             filename = secure_filename(json.filename)
-            json.save(os.path.join(app.config['UPLOAD_FOLDER'], 'dict.json'))
+            json.save(app.config['json_file'])
             # return redirect(url_for('url_to_json', filename=filename))
 
         if 'F_xml' not in request.files:
@@ -87,11 +82,8 @@ def json_to_xml():
             return redirect(request.url)
 
         uid = request.form['T_uid']
-        print("prz")
-        Json_to_xml('app/dict.json', xml, uid)
-        print("po")
-        path = "max4.xml"
-        return send_file(path, as_attachment=True)
+        Json_to_xml(app.config['json_file'], app.config['xml_file'], xml, uid)
+        return send_file(app.config['xml_file'], as_attachment=True)
 
     return render_template('index.html')
 
