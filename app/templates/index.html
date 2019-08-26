@@ -30,7 +30,7 @@
                     </tr>
                     <tr>
                         <td>
-				<button name="B_StJ" type="submit" class="button1" id="try-again">Source to
+				<button name="B_StJ" type="submit" class="button1" id="try-again" >Source to
                                 Json</button>
 			</td>
                         <td>
@@ -43,7 +43,8 @@
                 </table>
             </form>
             <h2>
-                Dowloand
+                
+                Gets elements matching regexp from the source and saves them as json
             </h2>
         </div>
         <div id=JtX>
@@ -59,7 +60,7 @@
                         <p>XML</p>
                     </td>
                     <td>
-                        <p>ID</p>
+                        <p>ID(default "mxb")</p>
                     </td>
                 </tr>
                 <tr>
@@ -80,9 +81,14 @@
                 </table>
             </form>
             <h2>
-                Converting ...
+                Converting json file to Xml according to according to the reference sxml
             </h2>
+            
+
         </div>
+        {% for message in get_flashed_messages() %}
+                <strong class="success">{{ message }}</strong>
+        {% endfor %}
         <!--     <div id=StX>
             <form role="form" method="post" onsubmit="return false;">
                 <table>

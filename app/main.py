@@ -12,8 +12,7 @@ ALLOWED_EXTENSIONS = {'json', 'xml'}
 
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 app = Flask(__name__)
@@ -25,11 +24,13 @@ app.secret_key = b'_5#23s/c1D#2/3ec]/'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    flash('')
     return render_template('index.html')
 
 
 @app.route('/url_to_json', methods=['GET', 'POST'])
 def url_to_json():
+    flash('')
     if request.method == 'POST':
         if ('T_Url' not in request.form) or ('T_RegExp' not in request.form):
             return redirect(request.url)
@@ -38,13 +39,17 @@ def url_to_json():
         regex = request.form['T_RegExp']
 
         if (url == '') or (regex == ''):
-            flash('No url or regexp')
-
+            flash('not given regexp or url')
             return redirect(request.url)
 
-        path = Url_to_json(url, regex)
+        path = Url_to_json(url, regex, app.config['json_file'])
+        
+        if path == "wrong url":
+            flash(path)
+            return redirect(request.url)
 
-        return send_file(path, as_attachment=True)
+        flash('')
+        return send_file(path, as_attachment=True ,cache_timeout=0)
 
     return render_template('index.html')
 
@@ -65,14 +70,12 @@ def json_to_xml():
             flash('No file selected ')
             return redirect(request.url)
 
-        if json and allowed_file(json.filename):
-            filename = secure_filename(json.filename)
-            json.save(app.config['json_file'])
-            # return redirect(url_for('url_to_json', filename=filename))
+        if json and not allowed_file(json.filename):
+            flash('wrong file type ')
+            return redirect(request.url)
 
         if 'F_xml' not in request.files:
             flash('No file part')
-            print("niema")
             return redirect(request.url)
 
         xml = request.files['F_xml']
@@ -81,8 +84,15 @@ def json_to_xml():
             flash('No selected file')
             return redirect(request.url)
 
+        if xml and not allowed_file(xml.filename):
+            flash('wrong file type')
+            return redirect(request.url)
+
         uid = request.form['T_uid']
+
         Json_to_xml(app.config['json_file'], app.config['xml_file'], xml, uid)
+        
+        flash('')
         return send_file(app.config['xml_file'], as_attachment=True)
 
     return render_template('index.html')
