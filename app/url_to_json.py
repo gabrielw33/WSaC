@@ -8,9 +8,9 @@ import requests
 def Url_to_json(url, reg, target):
     try:
         responce = requests.get(url)
-    except :                     
+    except:
         return "wrong url"
-    
+
     dictionary = {}
     match = re.finditer(reg, responce.text)
     for matchNum, match in enumerate(match, start=1):
