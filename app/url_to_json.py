@@ -7,12 +7,12 @@ import requests
 
 def Url_to_json(url, reg, target):
     try:
-        responce = requests.get(url)
+        response = requests.get(url)
     except Exception as e:
         return "wrong url"
 
     dictionary = {}
-    match = re.finditer(reg, responce.text)
+    match = re.finditer(reg, response.text)
     for matchNum, match in enumerate(match, start=1):
         key = match.group()
         dictionary[key] = -2

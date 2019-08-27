@@ -20,7 +20,7 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['json_file'] = app.config['UPLOAD_FOLDER'] + 'dict.json'
 app.config['xml_file'] = app.config['UPLOAD_FOLDER'] + 'config.xml'
-app.secret_key = b'_5#23s/c1D#2/3ec]/'
+app.secret_key = '59^6=;#&XP"2Vakfr4'
 
 
 @app.route('/', methods=['GET', 'POST'])
