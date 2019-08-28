@@ -12,26 +12,26 @@
 <body>
     <div class="container">
         <h1>
-
+            {{ session['username'] }}
+            rights: {{ session['rights'] }}
         </h1>
 
 
-        <div id=StJ>
+        <div id=Create style="visibility:{{ c }}">
             <h2>
                 Register new user
             </h2>
+
             <form role="form" method="POST" action="{{ url_for('create') }}">
-                <input name="new_user" type="text" placeholder="new user"><br>
+                <input name="new_user" type="text" placeholder="new user" value='{{ cos }}'><br>
                 <input name="new_password" type="text" placeholder="new password"> <br>
                 <input name="re_password" type="text" placeholder="repeat password"> <br>
-                <input name="Cright_user" type="text" placeholder="Create right"> <br>
-                <input name="Rright_user" type="text" placeholder="Read right"> <br>
-                <input name="Uright_user" type="text" placeholder="Update right"> <br>
-                <input name="Dright_user" type="text" placeholder="Delete right"> <br>
+                <input name="rights" type="text" placeholder="Right(CRUD)"> <br>
+
                 <button name="reg" type="submit" class="reg">Register</button>
             </form>
         </div>
-        <div id=StJ >
+        <div id=Read style="visibility:{{ r }}">
             <h2>
                 Show usrs
             </h2>
@@ -39,7 +39,7 @@
                 <button name="Show" type="submit" class="reg">Register</button>
             </form>
 
-            
+
 
             <ol>
                 {% for user in use %}
@@ -48,7 +48,7 @@
             </ol>
 
         </div>
-        <div id=StJ>
+        <div id=Update style="visibility:{{ u }}">
             <h2>
                 Edit user
             </h2>
@@ -56,14 +56,12 @@
                 <input name="id_user" type="text" placeholder="id_user"><br>
                 <input name="name_user" type="text" placeholder="user name"> <br>
                 <input name="password_user" type="text" placeholder="password"> <br>
-                <input name="Cright_user" type="text" placeholder="Create right"> <br>
-                <input name="Rright_user" type="text" placeholder="Read right"> <br>
-                <input name="Uright_user" type="text" placeholder="Update right"> <br>
-                <input name="Dright_user" type="text" placeholder="Delete right"> <br>
+                <input name="rights" type="text" placeholder="Rights"> <br>
+
                 <button name="Edit" type="submit" class="reg">Register</button>
             </form>
         </div>
-        <div id=StJ>
+        <div id=Delete style="visibility:{{ d }}">
             <h2>
                 Delete user
             </h2>

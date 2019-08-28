@@ -23,10 +23,10 @@ app.config['xml_file'] = app.config['UPLOAD_FOLDER'] + 'config.xml'
 app.secret_key = '59^6=;#&XP"2Vakfr4'
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
+@app.route('/convert', methods=['GET', 'POST'])
+def convert():
     flash('')
-    return render_template('index.html')
+    return render_template('convert.html')
 
 
 @app.route('/url_to_json', methods=['GET', 'POST'])
@@ -52,7 +52,7 @@ def url_to_json():
         flash('')
         return send_file(path, as_attachment=True, cache_timeout=0)
 
-    return render_template('index.html')
+    return redirect(url_for('convert'))
 
 
 @app.route('/json_to_xml', methods=['GET', 'POST'])
@@ -83,7 +83,6 @@ def json_to_xml():
 
         if xml.filename == '':
             flash('No selected file')
-            return redirect(request.url)
 
         if xml and not allowed_file(xml.filename):
             flash('wrong file type')
@@ -96,7 +95,7 @@ def json_to_xml():
         flash('')
         return send_file(app.config['xml_file'], as_attachment=True)
 
-    return render_template('index.html')
+    return redirect(url_for('convert'))
 
 
 if __name__ == "__main__":
