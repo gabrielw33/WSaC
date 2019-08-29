@@ -88,3 +88,8 @@ h2 {
   font-family: monospace;
   font-size: 20px; 
 }
+.error {
+  font-family: monospace;
+  font-size: 20px; 
+  color: #ff6600;
+}
