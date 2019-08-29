@@ -44,7 +44,7 @@
             </form>
             <h2>
                 
-                Gets elements matching regexp from the source and saves them as json
+                Return 'json' which contain elements matched in provided 'regexp' 
             </h2>
         </div>
         <div id=JtX>
@@ -81,13 +81,13 @@
                 </table>
             </form>
             <h2>
-                Converting json file to Xml according to according to the reference sxml
+                Converting provided 'json' file to specified xml 
             </h2>
             
 
         </div>
         {% for message in get_flashed_messages() %}
-                <strong class="success">{{ message }}</strong>
+	<div class="error">{{ message }}</div>
         {% endfor %}
         <!--     <div id=StX>
             <form role="form" method="post" onsubmit="return false;">
