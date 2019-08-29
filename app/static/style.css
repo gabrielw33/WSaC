@@ -1,29 +1,90 @@
+html {
+    font-family: sans-serif;
+    display: table;
+    margin: auto;
+}
 #StJ{
     border-radius: 25px;
-    background-color:#00f500;
+    background-color:#e6ffe6;
     padding: 20px;
-
+    
 }
 
 #JtX{
     border-radius: 25px;
-    background-color: aquamarine;
+    background-color: #ffffcc;
     padding: 20px;
 }
-
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  background-color: #fff;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+}
 button{
     width: 200px
 }
 input{
     width: 220px;
-/*    margin-left: 20px;
+/*  margin-left: 20px;
     margin-right: 20px;
 */
 }
-
 form{
     margin-top: 20px;
     margin-bottom:20px;
     padding-bottom: 30px;
     padding-top: 30px;  
+}
+container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+.button1 {
+	background-color: white;
+	border-radius: 6px;
+	font-size: 14px;
+	color: black;
+	border: 2px solid #ccffcc;
+	padding: 10px 20px;
+	transition-duration: 0.3s;
+}
+.button1:hover{
+	background-color: #1A90FF;
+	color: white;
+}
+.button2 {
+	background-color: white;
+	border-radius: 6px;
+	font-size: 14px;
+	color: black;
+	border: 2px solid #ffff80;
+	padding: 10px 20px;
+	transition-duration: 0.3s;
+}
+.button2:hover{
+	background-color: #ffff4d;
+	color: black;
+}
+p {
+  font-family: verdana;
+  font-size: 16px;
+  color: #000033;
+  line-height: 0.2;
+}
+th {
+  padding: 0px;
+}
+td {
+  padding: 4px;
+}
+h2 {
+  font-family: monospace;
+  font-size: 20px; 
 }

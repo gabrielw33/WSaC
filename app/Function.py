@@ -5,9 +5,3 @@ def DictForParamTAG(name, value):
     one_dic["name"] = name
     one_dic["value"] = str(value)
     return one_dic
-
-
-
-
-
-            

@@ -1,0 +1,12 @@
+language: python
+python:
+ - "3.6"
+install:
+ - pip install requests
+ - pip install pycodestyle
+script:
+ - pycodestyle --count app/url_to_json.py
+ - pycodestyle --count app/json_to_xml.py
+ - pycodestyle --count app/Function.py
+ - pycodestyle --count app/main.py
+if: branch = master

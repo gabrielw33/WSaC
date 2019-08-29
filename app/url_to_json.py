@@ -1,27 +1,23 @@
-import requests
 import re
-import json
 import sys
+import json
 import argparse
+import requests
 
-def Url_to_json(url,reg):
 
-    responce = requests.get(url)
+def Url_to_json(url, reg, target):
+    try:
+        responce = requests.get(url)
+    except Exception as e:
+        return "wrong url"
+
     dictionary = {}
     match = re.finditer(reg, responce.text)
-
     for matchNum, match in enumerate(match, start=1):
         key = match.group()
         dictionary[key] = -2
-        
-    fjson = json.dumps(dictionary, indent=4)
-    f = open("app/dict.json", "w")
-    f.write(fjson)
-    f.close()
-    print("ok")
-
-    
-
-
-
-
+    json_from_dict = json.dumps(dictionary, indent=4)
+    json_file = open(target, "w+")
+    json_file.write(json_from_dict)
+    json_file.close()
+    return json_file.name
