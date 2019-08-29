@@ -8,17 +8,12 @@
 </head>
 </head>
 
-
-
 <body>
-
-
-    <div class="container">
+    <div class="container" align='center'>
         <h1>
 
         </h1>
         <br>
-
         <div id=StJ>
             <form role="form" method="POST" action="{{ url_for('url_to_json') }}">
                 <table>
@@ -35,21 +30,21 @@
                     </tr>
                     <tr>
                         <td>
-                            <button name="B_StJ" type="submit" class="button1" id="try-again">Source to
+				<button name="B_StJ" type="submit" class="button1" id="try-again" >Source to
                                 Json</button>
-                        </td>
+			</td>
                         <td>
-                            <input name="T_Url" type="text">
-                        </td>
+				<input name="T_Url" type="text">
+			</td>
                         <td>
-                            <input name="T_RegExp" type="text">
-                        </td>
+				<input name="T_RegExp" type="text">
+			</td>
                     </tr>
                 </table>
             </form>
             <h2>
-
-                Gets elements matching regexp from the source and saves them as json
+                
+                Return 'json' which contain elements matched in provided 'regexp' 
             </h2>
         </div>
         <div id=JtX>
@@ -70,29 +65,29 @@
                 </tr>
                 <tr>
                     <td>
-                        <button name="B_JtX" type="submit" class="button2">Json to Xml </button>
-                    </td>
+			    <button name="B_JtX" type="submit" class="button2">Json to Xml </button>
+		    </td>
                     <td>
-                        <input name="F_json" class="file" type="file">
-                    </td>
+			    <input name="F_json" class="file" type="file">
+		    </td>
                     <td>
-                        <input name="F_xml" class="flie" type="file">
-                    </td>
+			    <input name="F_xml" class="flie" type="file">
+		    </td>
                     <td>
-                        <input name="T_uid" type="text">
-                    </td>
+			    <input name="T_uid" type="text"> 
+		    </td>
 
                 </tr>
                 </table>
             </form>
             <h2>
-                Converting json file to Xml according to according to the reference sxml
+                Converting provided 'json' file to specified xml 
             </h2>
-
+            
 
         </div>
         {% for message in get_flashed_messages() %}
-        <strong class="success">{{ message }}</strong>
+	<div class="error">{{ message }}</div>
         {% endfor %}
         <!--     <div id=StX>
             <form role="form" method="post" onsubmit="return false;">
@@ -111,6 +106,7 @@
                 </table>                
             </form>    
         </div> -->
+       
 
 
 

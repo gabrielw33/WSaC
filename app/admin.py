@@ -13,6 +13,8 @@ from simplecrypt import encrypt, decrypt
 from base64 import b64encode, b64decode
 from getpass import getpass
 import passlib.hash as ps
+from url_to_json import Url_to_json
+from json_to_xml import Json_to_xml
 
 Show_cliked = True
 Sacredcode = 'secred'
@@ -269,13 +271,13 @@ def url_to_json():
         regex = request.form['T_RegExp']
 
         if (url == '') or (regex == ''):
-            flash('not given regexp or url')
+            flash('Url and RegExp cannot be empty')
             return redirect(request.url)
 
         path = Url_to_json(url, regex, app.config['json_file'])
 
-        if path == "wrong url":
-            flash(path)
+        if not path:
+            flash('Invalid url')
             return redirect(request.url)
 
         flash('')
@@ -295,9 +297,10 @@ def json_to_xml():
             return redirect(request.url)
 
         json = request.files['F_json']
+        xml = request.files['F_xml']
 
         if json.filename == '':
-            flash('No file selected ')
+            flash('Select a json file')
             return redirect(request.url)
 
         if json and not allowed_file(json.filename):
@@ -308,10 +311,9 @@ def json_to_xml():
             flash('No file part')
             return redirect(request.url)
 
-        xml = request.files['F_xml']
-
         if xml.filename == '':
-            flash('No selected file')
+            flash('Upload a xml file')
+            return redirect(request.url)
 
         if xml and not allowed_file(xml.filename):
             flash('wrong file type')
