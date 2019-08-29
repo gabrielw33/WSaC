@@ -40,6 +40,8 @@ form{
     padding-bottom: 30px;
     padding-top: 30px;  
 }
+
+
 container {
   padding-right: 15px;
   padding-left: 15px;
@@ -72,6 +74,24 @@ container {
 	background-color: #ffff4d;
 	color: black;
 }
+.navB{
+  float: right;
+  clear: both;
+  margin:10px;
+  width: 150px;
+  background-color: rgb(218, 218, 218);
+	border-radius: 6px;
+	font-size: 14px;
+	color: black;
+	border: 2px solid #000033;
+	padding: 10px 20px;
+	transition-duration: 0.3s;
+}
+#nav{
+  float: right;
+  clear: both;
+}
+
 p {
   font-family: verdana;
   font-size: 16px;

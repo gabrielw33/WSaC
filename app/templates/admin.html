@@ -4,20 +4,24 @@
 <head>
     <title>{{config.SITE_NAME}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styleadmin.css') }}">
 </head>
-<h1>{{ config.SITE_NAME }}:</h1>
+<h3>
+    Admin panel
+</h3>
 </head>
 
 <body>
-    <div class="container">
-        <h1>
-            {{ session['username'] }}
-            rights: {{ session['rights'] }}
-        </h1>
+    <p>
+        Username: {{ session['username'] }}
+        <br>
+        Rights: {{ session['rights'] }}
+    </p>
+
+    <div id="contener">
 
 
-        <div id=Create style="visibility:{{ c }}">
+        <div id=Create style="opacity:{{ c }}">
             <h2>
                 Register new user
             </h2>
@@ -28,27 +32,11 @@
                 <input name="re_password" type="text" placeholder="repeat password"> <br>
                 <input name="rights" type="text" placeholder="Right(CRUD)"> <br>
 
-                <button name="reg" type="submit" class="reg">Register</button>
+                <button name="reg" type="submit" class="reg" {{bc}}>Register</button>
             </form>
         </div>
-        <div id=Read style="visibility:{{ r }}">
-            <h2>
-                Show usrs
-            </h2>
-            <form role="form" method="POST" action="{{ url_for('read') }}">
-                <button name="Show" type="submit" class="reg">Register</button>
-            </form>
 
-
-
-            <ol>
-                {% for user in use %}
-                <li>{{ user.user_name }} pas: <em>{{ user.user_password }}</em></li>
-                {% endfor %}
-            </ol>
-
-        </div>
-        <div id=Update style="visibility:{{ u }}">
+        <div id=Update style="opacity:{{ u }}">
             <h2>
                 Edit user
             </h2>
@@ -58,25 +46,41 @@
                 <input name="password_user" type="text" placeholder="password"> <br>
                 <input name="rights" type="text" placeholder="Rights"> <br>
 
-                <button name="Edit" type="submit" class="reg">Register</button>
+                <button name="Edit" type="submit" class="reg" {{ bu }}>Register</button>
             </form>
         </div>
-        <div id=Delete style="visibility:{{ d }}">
+        <div id=Delete style="opacity:{{ d }}">
             <h2>
                 Delete user
             </h2>
             <form role="form" method="POST" action="{{ url_for('delete') }}">
                 <input name="id_u" type="text" placeholder="id"><br>
 
-                <button name="del" type="submit" class="reg">Register</button>
+                <button name="del" type="submit" class="reg" {{bd}}>Register</button>
             </form>
         </div>
+
 
         {% for message in get_flashed_messages() %}
         <strong class="success">{{ message }}</strong>
         {% endfor %}
 
+    </div>
+    <div id=Read style="opacity:{{ r }}">
+        <h2>
+            Show usrs
+        </h2>
+        <form role="form" method="POST" action="{{ url_for('read') }}">
+            <button name="Show" type="submit" class="reg" {{br}}>Register</button>
+        </form>
 
+
+
+        <ol>
+            {% for user in use %}
+            <li>{{ user.user_name }} pas: <em>{{ user.rights }}</em></li>
+            {% endfor %}
+        </ol>
 
     </div>
 </body>
