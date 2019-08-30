@@ -1,15 +1,10 @@
 from flask import Flask
-#from flask.ext.bcrypt import Bcrypt
-from flask_bcrypt import Bcrypt
-#from flask_session import Session
 from flask import Flask, g
 from flask import render_template
 from flask import flash, redirect, url_for, request, session, send_file
 import os
 import sqlite3
 import hashlib as hs
-# import hmac import compare_digest
-from simplecrypt import encrypt, decrypt
 import base64
 from getpass import getpass
 import passlib.hash as ps
@@ -90,7 +85,6 @@ def login_test():
 
     
 
-
 @app.route('/', methods=['GET', 'POST'])
 def login():
     session['read'] = False
@@ -112,6 +106,7 @@ def login():
             session['logged'] = True
             return render_template('admin.html')
         # ===========================================!
+
         enc_login = savedata.encryptlog(login, Sacredcode)
         db = get_db()
         kursor = db.execute('SELECT * FROM users WHERE user_name = ?;',
@@ -205,6 +200,7 @@ def create():
             db.execute('INSERT INTO users VALUES (?,?,?,?);',
                        [None, user_name, password, rights])
             db.commit()
+        return redirect(url_for('read_db_on_begin'))     
     return redirect(url_for('admin'))
 
 
@@ -219,15 +215,16 @@ def read_db_on_begin():
     kursor = db.execute('SELECT * FROM users')
     kursor = kursor.fetchall()
     r_db = []
-
+    lis = []
     for user in kursor:
-        lis = []
+      
         lis.append(user['id'])
+        print(user['user_name'])
         lis.append(savedata.decryptlog(user['user_name'], Sacredcode))
         lis.append(user['rights'])
         r_db.append(lis)
+        lis = []
     session['db'] = r_db
-    print("dziala")
     session['read'] = True
     return redirect(url_for('admin'))
 
@@ -252,7 +249,7 @@ def update():
         name = request.form['name_user']
         password = request.form['password_user']
         right = request.form['rights']
-        # name=savedata.encryptlog(name)
+        name=savedata.encryptlog(name, Sacredcode)
 
         if id_u == '':
             flash('give user id')
@@ -273,7 +270,7 @@ def update():
             db.execute('UPDATE users SET rights = ?  WHERE id = ?;',
                        [right, id_u])
             db.commit()
-
+        return redirect(url_for('read_db_on_begin'))    
     return redirect(url_for('admin'))
 
 
@@ -290,6 +287,7 @@ def delete():
         db = get_db()
         db.execute('DELETE FROM users WHERE id = ?;', [id_u])
         db.commit()
+        return redirect(url_for('read_db_on_begin')) 
     return redirect(url_for('admin'))
 
 
