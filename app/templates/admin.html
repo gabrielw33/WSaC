@@ -18,12 +18,17 @@
         Rights: {{ session['rights'] }}
     </p>
 
+
+    {% for message in get_flashed_messages() %}
+    <div class="error">{{ message }}</div>
+    {% endfor %}
+
     <div id="contener">
 
 
         <div id=Create style="opacity:{{ c }}">
             <h2>
-                Register new user
+                Create new user
             </h2>
 
             <form role="form" method="POST" action="{{ url_for('create') }}">
@@ -32,7 +37,7 @@
                 <input name="re_password" type="text" placeholder="repeat password"> <br>
                 <input name="rights" type="text" placeholder="Right(CRUD)"> <br>
 
-                <button name="reg" type="submit" class="reg" {{bc}}>Register</button>
+                <button name="reg" type="submit" class="reg" {{bc}}>Create</button>
             </form>
         </div>
 
@@ -44,9 +49,9 @@
                 <input name="id_user" type="text" placeholder="id_user"><br>
                 <input name="name_user" type="text" placeholder="user name"> <br>
                 <input name="password_user" type="text" placeholder="password"> <br>
-                <input name="rights" type="text" placeholder="Rights"> <br>
+                <input name="rights" type="text" placeholder="Rights(CRUD)"> <br>
 
-                <button name="Edit" type="submit" class="reg" {{ bu }}>Register</button>
+                <button name="Edit" type="submit" class="reg" {{ bu }}>Edit</button>
             </form>
         </div>
         <div id=Delete style="opacity:{{ d }}">
@@ -56,14 +61,12 @@
             <form role="form" method="POST" action="{{ url_for('delete') }}">
                 <input name="id_u" type="text" placeholder="id"><br>
 
-                <button name="del" type="submit" class="reg" {{bd}}>Register</button>
+                <button name="del" type="submit" class="reg" {{bd}}>Delete</button>
             </form>
         </div>
 
 
-        {% for message in get_flashed_messages() %}
-        <strong class="success">{{ message }}</strong>
-        {% endfor %}
+
 
     </div>
     <div id=Read style="opacity:{{ r }}">
@@ -71,14 +74,14 @@
             Show usrs
         </h2>
         <form role="form" method="POST" action="{{ url_for('read') }}">
-            <button name="Show" type="submit" class="reg" {{br}}>Register</button>
+            <button name="Show" type="submit" class="reg" {{br}}>Show</button>
         </form>
 
 
 
         <ol>
-            {% for user in use %}
-            <li>{{ user.user_name }} pas: <em>{{ user.rights }}</em></li>
+            {% for x in range(len) %}
+                    {{use[x][0]}} &nbsp; {{use[x][1]}} Rights: {{ use[x][2] }} <br> 
             {% endfor %}
         </ol>
 

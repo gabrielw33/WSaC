@@ -4,20 +4,22 @@ from flask_bcrypt import Bcrypt
 #from flask_session import Session
 from flask import Flask, g
 from flask import render_template
-from flask import flash, redirect, url_for, request, session
+from flask import flash, redirect, url_for, request, session, send_file
 import os
 import sqlite3
 import hashlib as hs
 # import hmac import compare_digest
 from simplecrypt import encrypt, decrypt
-from base64 import b64encode, b64decode
+import base64
 from getpass import getpass
 import passlib.hash as ps
 from url_to_json import Url_to_json
 from json_to_xml import Json_to_xml
+from Crypto.Cipher import AES
 
-Show_cliked = True
-Sacredcode = 'secred'
+
+Show_cliked = False
+Sacredcode = '1614567790183496'
 app = Flask(__name__)
 
 app.config.update(dict(
@@ -36,6 +38,7 @@ app.config['xml_file'] = app.config['UPLOAD_FOLDER'] + 'config.xml'
 app.secret_key = '59^6=;#&XP"2Vakfr4'
 
 
+
 class savedata(object):
 
     @staticmethod
@@ -47,15 +50,18 @@ class savedata(object):
         return ps.sha256_crypt.encrypt(password)
 
     @staticmethod
-    def encryptlog(password):
-        return hs.sha256(password.encode('utf-8')).hexdigest()
+    def encryptlog(password, code):
+
+        cipher = AES.new(code, AES.MODE_ECB)
+        encoded = base64.b64encode(cipher.encrypt(password.rjust(32)))
+        return encoded.decode('UTF-8')
 
     @staticmethod
     def decryptlog(password, code):
 
-        cipher = b64decode(password)
-        plaintext = decrypt(code, cipher)
-        return plaintext
+        cipher = AES.new(code, AES.MODE_ECB)
+        decoded = cipher.decrypt(base64.b64decode(password))
+        return decoded.decode('UTF-8')
 
 
 def allowed_file(filename):
@@ -67,6 +73,7 @@ def get_db():
     """Funkcja tworząca połączenie z bazą danych"""
     if not g.get('db'):
         con = sqlite3.connect(app.config['DATABASE'])
+
         con.row_factory = sqlite3.Row
         g.db = con
     return g.db
@@ -77,10 +84,19 @@ def close_db(error):
     if g.get('db'):
         g.db.close()
 
+def login_test():
+    if 'logged' not in session:
+        session['logged'] = False
+
+    
+
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
-    error =''
+    session['read'] = False
+    session['db'] = None
+
+    error = ''
     if 'logged' in session:
         if session['logged'] == True:
             return redirect(url_for('convert'))
@@ -88,16 +104,15 @@ def login():
     if request.method == 'POST':
         login = request.form['user']
         password = request.form['password']
-        enc_login = savedata.encryptlog(login)
 
-# +++++++++++BACKDOOR+++++++++++++++++++++++++++++++!
+        # ===========================================
         if login == 'root' and password == 'root':
             session['username'] = login
             session['rights'] = 'crud'
             session['logged'] = True
             return render_template('admin.html')
-# ===================================================!
-
+        # ===========================================!
+        enc_login = savedata.encryptlog(login, Sacredcode)
         db = get_db()
         kursor = db.execute('SELECT * FROM users WHERE user_name = ?;',
                             [enc_login])
@@ -105,17 +120,17 @@ def login():
 
         if kursor == None:
             error = 'wrong login'
-            return render_template('index.html',error=error)
+            return render_template('index.html', error=error)
 
         if (savedata.passcomper(password, kursor['user_password'])):
             session['username'] = login
             session['rights'] = kursor['rights']
             session['logged'] = True
             return redirect(url_for('convert'))
-        else :
+        else:
             error = 'wrong password'
 
-    return render_template('index.html',error=error)
+    return render_template('index.html', error=error)
 
 
 @app.route('/logoff', methods=['GET', 'POST'])
@@ -126,69 +141,94 @@ def logoff():
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-
-    print(savedata.encrypthash('Darkes'))
-    print(savedata.encrypthash('Darkes'))
-
+    
     if 'logged' not in session:
         session['logged'] = False
+    if session['logged']==False:
         return redirect(url_for('login'))
-    if session['logged'] == True:
-        c = '0.4'
-        r = '0.4'
-        u = '0.4'
-        d = '0.4'
-        bc = 'disabled'
-        br = 'disabled'
-        bu = 'disabled'
-        bd = 'disabled'
 
-        if ('c' or 'C') in session['rights']:
-            c = '1'
-            bc = ''
+    
+    c = '0.4'
+    r = '0.4'
+    u = '0.4'
+    d = '0.4'
+    bc = 'disabled'
+    br = 'disabled'
+    bu = 'disabled'
+    bd = 'disabled'
 
-        if ('r' or 'R') in session['rights']:
-            r = '1'
-            br = ''
+    if ('c' or 'C') in session['rights']:
+        c = '1'
+        bc = ''
 
-        if ('u' or 'U') in session['rights']:
-            u = '1'
-            bu = ''
+    if ('r' or 'R') in session['rights']:
+        r = '1'
+        br = ''
 
-        if ('d' or 'D') in session['rights']:
-            d = '1'
-            bd = ''
+    if ('u' or 'U') in session['rights']:
+        u = '1'
+        bu = ''
 
-        if Show_cliked == True:
-            db = get_db()
-            kursor = db.execute('SELECT * FROM users')
-            use = kursor.fetchall()
+    if ('d' or 'D') in session['rights']:
+        d = '1'
+        bd = ''
 
-            return render_template('admin.html', use=use, c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd)
+    if Show_cliked == True:
+        if session['read'] == False:
+            return redirect(url_for('read_db_on_begin'))
+        use = session['db']
 
-        return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd)
-    return redirect(url_for('login'))
+        return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd,use=use, len=len(use))
+    
+    return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd, len = 0)
 
 
 @app.route('/create',  methods=['GET', 'POST'])
 def create():
 
     if ('c' or 'C') in session['rights']:
-        print("pykło")
         user_name = request.form['new_user']
         password = request.form['new_password']
         re_password = request.form['re_password']
         rights = request.form['rights']
 
+        if (user_name or password or re_password) == '':
+            flash('complete the required forms')
+            return redirect(url_for('admin'))
+
         if password == re_password:
 
             password = savedata.encrypthash(password)
-            user_name = savedata.encryptlog(user_name)
+            user_name = savedata.encryptlog(user_name, Sacredcode)
 
             db = get_db()
             db.execute('INSERT INTO users VALUES (?,?,?,?);',
-                    [None, user_name, password, rights])
+                       [None, user_name, password, rights])
             db.commit()
+    return redirect(url_for('admin'))
+
+
+@app.route('/read_db_on_begin', methods=['GET', 'POST'])
+def read_db_on_begin():
+    if 'logged' not in session:
+        session['logged'] = False
+    if session['logged']==False:
+        return redirect(url_for('login'))
+    
+    db = get_db()
+    kursor = db.execute('SELECT * FROM users')
+    kursor = kursor.fetchall()
+    r_db = []
+
+    for user in kursor:
+        lis = []
+        lis.append(user['id'])
+        lis.append(savedata.decryptlog(user['user_name'], Sacredcode))
+        lis.append(user['rights'])
+        r_db.append(lis)
+    session['db'] = r_db
+    print("dziala")
+    session['read'] = True
     return redirect(url_for('admin'))
 
 
@@ -201,24 +241,22 @@ def read():
         else:
             Show_cliked = True
 
-        if Show_cliked == True:
-            db = get_db()
-            kursor = db.execute('SELECT * FROM users')
-            use = kursor.fetchall()
-            render_template('admin.html', use=use)
-
     return redirect(url_for('admin'))
 
 
 @app.route('/update', methods=['GET', 'POST'])
 def update():
-    if ('u' and 'U') in session['rights']:
+    if ('u' or 'U') in session['rights']:
 
         id_u = request.form['id_user']
         name = request.form['name_user']
         password = request.form['password_user']
         right = request.form['rights']
-        name=savedata.encryptlog(name)
+        # name=savedata.encryptlog(name)
+
+        if id_u == '':
+            flash('give user id')
+            return redirect(url_for('admin'))
 
         db = get_db()
         if name != '':
@@ -228,12 +266,12 @@ def update():
 
         if password != '':
             db.execute('UPDATE users SET user_password = ?  WHERE id = ?;', [
-                    password, id_u])
+                password, id_u])
             db.commit()
 
         if right != '':
             db.execute('UPDATE users SET rights = ?  WHERE id = ?;',
-                    [right, id_u])
+                       [right, id_u])
             db.commit()
 
     return redirect(url_for('admin'))
@@ -241,8 +279,14 @@ def update():
 
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
+    
     if ('d' or 'D') in session['rights']:
         id_u = request.form['id_u']
+
+        if id_u == '':
+            flash('give user id')
+            return redirect(url_for('admin'))
+
         db = get_db()
         db.execute('DELETE FROM users WHERE id = ?;', [id_u])
         db.commit()
@@ -253,11 +297,10 @@ def delete():
 def convert():
     if 'logged' not in session:
         session['logged'] = False
+    
+    if session['logged']==False:
         return redirect(url_for('login'))
-    if session['logged'] == True:
-        flash('')
-        return render_template('convert.html')
-    return redirect(url_for('login'))
+    return render_template('convert.html')
 
 
 @app.route('/url_to_json', methods=['GET', 'POST'])
