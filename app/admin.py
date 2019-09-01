@@ -1,17 +1,16 @@
-from flask import Flask
-from flask import Flask, g
-from flask import render_template
-from flask import flash, redirect, url_for, request, session, send_file
+import base64
+import hashlib as hs
 import os
 import sqlite3
-import hashlib as hs
-import base64
 from getpass import getpass
+
 import passlib.hash as ps
-from url_to_json import Url_to_json
-from json_to_xml import Json_to_xml
 from Crypto.Cipher import AES
 
+from flask import (Flask, flash, g, redirect, render_template, request,
+                   send_file, session, url_for)
+from json_to_xml import Json_to_xml
+from url_to_json import Url_to_json
 
 Show_cliked = False
 Sacredcode = '1614567790183496'
@@ -104,7 +103,7 @@ def login():
             session['username'] = login
             session['rights'] = 'crud'
             session['logged'] = True
-            return render_template('admin.html')
+            return render_template('index.html', error=error)
         # ===========================================!
 
         enc_login = savedata.encryptlog(login, Sacredcode)
@@ -180,6 +179,10 @@ def admin():
 
 @app.route('/create',  methods=['GET', 'POST'])
 def create():
+    if 'logged' not in session:
+        session['logged'] = False
+    if session['logged']==False:
+        return redirect(url_for('login'))
 
     if ('c' or 'C') in session['rights']:
         user_name = request.form['new_user']
@@ -187,7 +190,7 @@ def create():
         re_password = request.form['re_password']
         rights = request.form['rights']
 
-        if (user_name or password or re_password) == '':
+        if user_name == '' or password == '' or re_password == '':
             flash('complete the required forms')
             return redirect(url_for('admin'))
 
@@ -219,7 +222,6 @@ def read_db_on_begin():
     for user in kursor:
       
         lis.append(user['id'])
-        print(user['user_name'])
         lis.append(savedata.decryptlog(user['user_name'], Sacredcode))
         lis.append(user['rights'])
         r_db.append(lis)
@@ -231,6 +233,11 @@ def read_db_on_begin():
 
 @app.route('/read', methods=['GET', 'POST'])
 def read():
+    if 'logged' not in session:
+        session['logged'] = False
+    if session['logged']==False:
+        return redirect(url_for('login'))
+
     if ('r' or 'R') in session['rights']:
         global Show_cliked
         if Show_cliked == True:
@@ -243,6 +250,11 @@ def read():
 
 @app.route('/update', methods=['GET', 'POST'])
 def update():
+    if 'logged' not in session:
+        session['logged'] = False
+    if session['logged']==False:
+        return redirect(url_for('login'))
+
     if ('u' or 'U') in session['rights']:
 
         id_u = request.form['id_user']
@@ -276,6 +288,10 @@ def update():
 
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
+    if 'logged' not in session:
+        session['logged'] = False
+    if session['logged']==False:
+        return redirect(url_for('login'))
     
     if ('d' or 'D') in session['rights']:
         id_u = request.form['id_u']
@@ -303,7 +319,11 @@ def convert():
 
 @app.route('/url_to_json', methods=['GET', 'POST'])
 def url_to_json():
-    flash('')
+    if 'logged' not in session:
+        session['logged'] = False
+    if session['logged']==False:
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         if ('T_Url' not in request.form) or ('T_RegExp' not in request.form):
             return redirect(request.url)
@@ -329,6 +349,12 @@ def url_to_json():
 
 @app.route('/json_to_xml', methods=['GET', 'POST'])
 def json_to_xml():
+
+    if 'logged' not in session:
+        session['logged'] = False
+    if session['logged']==False:
+        return redirect(url_for('login'))
+
     json = None
     xml = None
     uid = None
