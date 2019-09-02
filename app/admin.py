@@ -83,12 +83,22 @@ def login_test():
         session['logged'] = False
 
 
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return redirect(url_for('login'))
+
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
 
+    print(0)
     if 'logged' in session:
+        print(1)
         if session['logged'] == True:
+            print(2)
             return redirect(url_for('convert'))
+    print(3)        
     error = ''
     session['read'] = False
     session['db'] = None
@@ -98,11 +108,11 @@ def login():
         password = request.form['password']
 
         # ===========================================
-        if login == 'root' and password == 'root':
-            session['username'] = login
-            session['rights'] = 'crud'
-            session['logged'] = True
-            return render_template('index.html', error=error)
+        #if login == 'root' and password == 'root':
+        #    session['username'] = login
+        #    session['rights'] = 'crud'
+        #    session['logged'] = True
+        #    return render_template('index.html', error=error)
         # ===========================================!
 
         enc_login = savedata.encryptlog(login, Sacredcode)
@@ -316,7 +326,7 @@ def convert():
 
     if session['logged'] == False:
         return redirect(url_for('login'))
-    print(session['rights'])
+
     Sr = session['rights']
     if ('c' in Sr) or ('C' in Sr) or ('R' in Sr) or ('r' in Sr) or \
             ('u' in Sr) or ('U' in Sr) or ('d' in Sr) or ('D' in Sr):
