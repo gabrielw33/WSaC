@@ -1,0 +1,5 @@
+<provisioning productID="mxb" version="1.1">
+<nvm>
+<param name="SIP.Account.4.AllowRouteHeaders" value="0" />
+</nvm>
+</provisioning>

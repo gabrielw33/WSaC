@@ -8,5 +8,6 @@ script:
  - pycodestyle --count app/url_to_json.py
  - pycodestyle --count app/json_to_xml.py
  - pycodestyle --count app/Function.py
- - pycodestyle --count app/main.py
+ - pycodestyle --count app/admin.py
+ - python3 app/admin.py
 if: branch = master

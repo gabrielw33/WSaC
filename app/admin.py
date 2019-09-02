@@ -92,13 +92,9 @@ def catch_all(path):
 @app.route('/', methods=['GET', 'POST'])
 def login():
 
-    print(0)
     if 'logged' in session:
-        print(1)
         if session['logged'] == True:
-            print(2)
             return redirect(url_for('convert'))
-    print(3)        
     error = ''
     session['read'] = False
     session['db'] = None
@@ -108,7 +104,7 @@ def login():
         password = request.form['password']
 
         # ===========================================
-        #if login == 'root' and password == 'root':
+        # if login == 'root' and password == 'root':
         #    session['username'] = login
         #    session['rights'] = 'crud'
         #    session['logged'] = True
@@ -267,7 +263,6 @@ def update():
 
     if ('u' in session['rights']) or ('U' in session['rights']):
 
-        
         e_name = request.form['eduser']
         name = request.form['name_user']
         password = request.form['password_user']
