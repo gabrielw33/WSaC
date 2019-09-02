@@ -2,9 +2,9 @@
 <html>
 
 <head>
-    <title>Loading</title>
+    <title>Converer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 </head>
 
@@ -15,40 +15,91 @@
         </h1>
         <br>
         <div id=StJ>
-            <h2>
-<<<<<<< HEAD:app/templates/convert.html
-                
-                Return 'json' which contain elements matched in provided 'regexp' 
-=======
-                Login 
->>>>>>> baza:app/templates/index.html
-            </h2>
-            <form role="form" method="POST" >
-                <input name="user" type="text"><br>
-                <input name="password" type="password"> <br>
-                <button name="B_StJ" type="submit" class="button1" id="try-again">Login</button>
+            <form role="form" method="POST" action="{{ url_for('url_to_json') }}">
+                <table>
+                    <tr>
+                        <td>
+                            <p>Convert</p>
+                        </td>
+                        <td>
+                            <p>Url</p>
+                        </td>
+                        <td>
+                            <p>RegExp</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button name="B_StJ" type="submit" class="button1" id="try-again">Source to
+                                Json</button>
+                        </td>
+                        <td>
+                            <input name="T_Url" type="text">
+                        </td>
+                        <td>
+                            <input name="T_RegExp" type="text">
+                        </td>
+                    </tr>
+                </table>
             </form>
-<<<<<<< HEAD:app/templates/convert.html
             <h2>
-                Converting provided 'json' file to specified xml 
+
+                Return 'json' which contain elements matched in provided 'regexp'
             </h2>
-            
-=======
-            <p>
-                {{error}}
-            </p>
->>>>>>> baza:app/templates/index.html
+        </div>
+        <div id=JtX>
+            <form role="form" method="POST" action="{{ url_for('json_to_xml') }}" enctype=multipart/form-data> <table>
+                <tr>
+                    <td>
+                        <p>Convert</p>
+                    </td>
+                    <td>
+                        <p>Json</p>
+                    </td>
+                    <td>
+                        <p>XML</p>
+                    </td>
+                    <td>
+                        <p>ID(default "mxb")</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button name="B_JtX" type="submit" class="button2">Json to Xml </button>
+                    </td>
+                    <td>
+                        <input name="F_json" class="file" type="file">
+                    </td>
+                    <td>
+                        <input name="F_xml" class="flie" type="file">
+                    </td>
+                    <td>
+                        <input name="T_uid" type="text">
+                    </td>
+
+                </tr>
+                </table>
+            </form>
+            <h2>
+                Converting provided 'json' file to specified xml
+            </h2>
+
 
         </div>
-
         {% for message in get_flashed_messages() %}
-<<<<<<< HEAD:app/templates/convert.html
-	<div class="error">{{ message }}</div>
-=======
-        <strong class="success">{{ message }}</strong>
->>>>>>> baza:app/templates/index.html
+        <div class="error">{{ message }}</div>
         {% endfor %}
 
+
+    </div>
+    <div id='nav'>
+        <form class="navF" role="form" method="POST" action="{{ url_for('admin') }}">
+            <button class="navB" name="Admin" type="submit" id="try-again" style="visibility: {{admin_button}};">Admin
+                panel</button>
+        </form>
+        <form class="navF" role="form" method="POST" action="{{ url_for('logoff') }}">
+            <button class="navB" name="logoff" type="submit" id="try-again"> Logoff</button>
+        </form>
     </div>
 </body>
 
