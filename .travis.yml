@@ -4,7 +4,6 @@ python:
 install:
  - pip install requests
  - pip install pycodestyle
- - pip instal passlib
 script:
  - pycodestyle --count app/url_to_json.py
  - pycodestyle --count app/json_to_xml.py
