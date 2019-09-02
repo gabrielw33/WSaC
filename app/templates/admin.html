@@ -18,11 +18,11 @@
         Rights: {{ session['rights'] }}
     </p>
 
-
-    {% for message in get_flashed_messages() %}
-    <div class="error">{{ message }}</div>
-    {% endfor %}
-
+    <div class="error">
+        {% for message in get_flashed_messages() %}
+        {{ message }}
+        {% endfor %}
+    </div>
     <div id="contener">
 
 
@@ -81,9 +81,9 @@
 
         <table>
             <tr>
-            <th>Id </th>
-            <th>UserName </th>
-            <th>Rights </th>
+                <th>Id </th>
+                <th>UserName </th>
+                <th>Rights </th>
             </tr>
             {% for x in range(len) %}
             <tr>

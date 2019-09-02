@@ -3,17 +3,18 @@ import hashlib as hs
 import os
 import sqlite3
 from getpass import getpass
-
 import passlib.hash as ps
 from Crypto.Cipher import AES
-
 from flask import (Flask, flash, g, redirect, render_template, request,
                    send_file, session, url_for)
 from json_to_xml import Json_to_xml
 from url_to_json import Url_to_json
 
 Show_cliked = False
-Sacredcode = '1614567790183496'
+f = open('SC.txt')
+Sacredcode = str(f.read())
+f.close()
+
 app = Flask(__name__)
 
 app.config.update(dict(
@@ -200,15 +201,23 @@ def create():
             flash('complete the required forms')
             return redirect(url_for('admin'))
 
+        if user_name in session['db']:
+            flash('complete the required forms')
+            return redirect(url_for('admin'))
+
         if password == re_password:
 
             password = savedata.encrypthash(password)
             user_name = savedata.encryptlog(user_name, Sacredcode)
+            try:
+                db = get_db()
+                db.execute('INSERT INTO users VALUES (?,?,?,?);',
+                           [None, user_name, password, rights])
+                db.commit()
+            except sqlite3.IntegrityError:
+                flash('such user already exists')
+                return redirect(url_for('admin'))
 
-            db = get_db()
-            db.execute('INSERT INTO users VALUES (?,?,?,?);',
-                       [None, user_name, password, rights])
-            db.commit()
         return redirect(url_for('read_db_on_begin'))
     return redirect(url_for('admin'))
 
