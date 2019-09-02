@@ -46,10 +46,10 @@
                 Edit user
             </h2>
             <form role="form" method="POST" action="{{ url_for('update') }}">
-                <input name="id_user" type="text" placeholder="id_user"><br>
-                <input name="name_user" type="text" placeholder="user name"> <br>
-                <input name="password_user" type="text" placeholder="password"> <br>
-                <input name="rights" type="text" placeholder="Rights(CRUD)"> <br>
+                <input name="eduser" type="text" placeholder="user name"><br>
+                <input name="name_user" type="text" placeholder="new user name"> <br>
+                <input name="password_user" type="text" placeholder="new password"> <br>
+                <input name="rights" type="text" placeholder="new Rights(CRUD)"> <br>
 
                 <button name="Edit" type="submit" class="reg" {{ bu }}>Edit</button>
             </form>
@@ -59,7 +59,7 @@
                 Delete user
             </h2>
             <form role="form" method="POST" action="{{ url_for('delete') }}">
-                <input name="id_u" type="text" placeholder="id"><br>
+                <input name="name_user" type="text" placeholder="username"><br>
 
                 <button name="del" type="submit" class="reg" {{bd}}>Delete</button>
             </form>
@@ -79,11 +79,21 @@
 
 
 
-        <ol>
+        <table>
+            <tr>
+            <th>Id </th>
+            <th>UserName </th>
+            <th>Rights </th>
+            </tr>
             {% for x in range(len) %}
-                    {{use[x][0]}} &nbsp; {{use[x][1]}} Rights: {{ use[x][2] }} <br> 
+            <tr>
+                <td> {{use[x][0]}} </td>
+                <td> {{use[x][1]}} </td>
+                <td> {{ use[x][2]}} </dr> <br>
+            </tr>
             {% endfor %}
-        </ol>
+
+        </table>
 
     </div>
 </body>

@@ -60,3 +60,7 @@ button{
     height: 50px ;
     color: #ff6600;
   }
+th,td{
+    padding-right: 20px;
+    text-align: left;
+}

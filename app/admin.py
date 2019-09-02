@@ -32,7 +32,6 @@ app.config['xml_file'] = app.config['UPLOAD_FOLDER'] + 'config.xml'
 app.secret_key = '59^6=;#&XP"2Vakfr4'
 
 
-
 class savedata(object):
 
     @staticmethod
@@ -78,21 +77,21 @@ def close_db(error):
     if g.get('db'):
         g.db.close()
 
+
 def login_test():
     if 'logged' not in session:
         session['logged'] = False
 
-    
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
-    session['read'] = False
-    session['db'] = None
 
-    error = ''
     if 'logged' in session:
         if session['logged'] == True:
             return redirect(url_for('convert'))
+    error = ''
+    session['read'] = False
+    session['db'] = None
 
     if request.method == 'POST':
         login = request.form['user']
@@ -130,18 +129,19 @@ def login():
 @app.route('/logoff', methods=['GET', 'POST'])
 def logoff():
     session['logged'] = False
+    session['rights'] = None
+    session['user_name'] = None
     return redirect(url_for('login'))
 
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    
+
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged']==False:
+    if session['logged'] == False:
         return redirect(url_for('login'))
 
-    
     c = '0.4'
     r = '0.4'
     u = '0.4'
@@ -151,19 +151,19 @@ def admin():
     bu = 'disabled'
     bd = 'disabled'
 
-    if ('c' or 'C') in session['rights']:
+    if ('c' in session['rights']) or ('C' in session['rights']):
         c = '1'
         bc = ''
 
-    if ('r' or 'R') in session['rights']:
+    if ('r' in session['rights']) or ('R'in session['rights']):
         r = '1'
         br = ''
 
-    if ('u' or 'U') in session['rights']:
+    if ('u' in session['rights']) or ('U'in session['rights']):
         u = '1'
         bu = ''
 
-    if ('d' or 'D') in session['rights']:
+    if ('d' in session['rights']) or ('D' in session['rights']):
         d = '1'
         bd = ''
 
@@ -172,19 +172,19 @@ def admin():
             return redirect(url_for('read_db_on_begin'))
         use = session['db']
 
-        return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd,use=use, len=len(use))
-    
-    return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd, len = 0)
+        return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd, use=use, len=len(use))
+
+    return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd, len=0)
 
 
 @app.route('/create',  methods=['GET', 'POST'])
 def create():
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged']==False:
+    if session['logged'] == False:
         return redirect(url_for('login'))
 
-    if ('c' or 'C') in session['rights']:
+    if ('c' in session['rights']) or ('C' in session['rights']):
         user_name = request.form['new_user']
         password = request.form['new_password']
         re_password = request.form['re_password']
@@ -203,7 +203,7 @@ def create():
             db.execute('INSERT INTO users VALUES (?,?,?,?);',
                        [None, user_name, password, rights])
             db.commit()
-        return redirect(url_for('read_db_on_begin'))     
+        return redirect(url_for('read_db_on_begin'))
     return redirect(url_for('admin'))
 
 
@@ -211,16 +211,16 @@ def create():
 def read_db_on_begin():
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged']==False:
+    if session['logged'] == False:
         return redirect(url_for('login'))
-    
+
     db = get_db()
     kursor = db.execute('SELECT * FROM users')
     kursor = kursor.fetchall()
     r_db = []
     lis = []
     for user in kursor:
-      
+
         lis.append(user['id'])
         lis.append(savedata.decryptlog(user['user_name'], Sacredcode))
         lis.append(user['rights'])
@@ -235,10 +235,10 @@ def read_db_on_begin():
 def read():
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged']==False:
+    if session['logged'] == False:
         return redirect(url_for('login'))
 
-    if ('r' or 'R') in session['rights']:
+    if ('r' in session['rights']) or ('R' in session['rights']):
         global Show_cliked
         if Show_cliked == True:
             Show_cliked = False
@@ -252,37 +252,38 @@ def read():
 def update():
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged']==False:
+    if session['logged'] == False:
         return redirect(url_for('login'))
 
-    if ('u' or 'U') in session['rights']:
+    if ('u' in session['rights']) or ('U' in session['rights']):
 
-        id_u = request.form['id_user']
+        
+        e_name = request.form['eduser']
         name = request.form['name_user']
         password = request.form['password_user']
         right = request.form['rights']
-        name=savedata.encryptlog(name, Sacredcode)
-
-        if id_u == '':
-            flash('give user id')
+        name = savedata.encryptlog(name, Sacredcode)
+        e_name = savedata.encryptlog(e_name, Sacredcode)
+        if e_name == '':
+            flash('give user name')
             return redirect(url_for('admin'))
 
         db = get_db()
         if name != '':
             db.execute(
-                'UPDATE users SET user_name = ?  WHERE id = ?;', [name, id_u])
+                'UPDATE users SET user_name = ?  WHERE user_name = ?;', [name, e_name])
             db.commit()
 
         if password != '':
-            db.execute('UPDATE users SET user_password = ?  WHERE id = ?;', [
-                password, id_u])
+            db.execute('UPDATE users SET user_password = ?  WHERE user_name = ?;', [
+                password, e_name])
             db.commit()
 
         if right != '':
-            db.execute('UPDATE users SET rights = ?  WHERE id = ?;',
-                       [right, id_u])
+            db.execute('UPDATE users SET rights = ?  WHERE user_name = ?;',
+                       [right, e_name])
             db.commit()
-        return redirect(url_for('read_db_on_begin'))    
+        return redirect(url_for('read_db_on_begin'))
     return redirect(url_for('admin'))
 
 
@@ -290,38 +291,45 @@ def update():
 def delete():
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged']==False:
+    if session['logged'] == False:
         return redirect(url_for('login'))
-    
-    if ('d' or 'D') in session['rights']:
-        id_u = request.form['id_u']
 
-        if id_u == '':
-            flash('give user id')
+    if ('d' in session['rights']) or ('D' in session['rights']):
+        user = request.form['name_user']
+
+        if user == '':
+            flash('give user name')
             return redirect(url_for('admin'))
-
+        enc_user = savedata.encryptlog(user, Sacredcode)
         db = get_db()
-        db.execute('DELETE FROM users WHERE id = ?;', [id_u])
+        db.execute('DELETE FROM users WHERE user_name = ?;', [enc_user])
         db.commit()
-        return redirect(url_for('read_db_on_begin')) 
+        return redirect(url_for('read_db_on_begin'))
     return redirect(url_for('admin'))
 
 
 @app.route('/convert', methods=['GET', 'POST'])
 def convert():
+    admin_button = 'collapse'
     if 'logged' not in session:
         session['logged'] = False
-    
-    if session['logged']==False:
+
+    if session['logged'] == False:
         return redirect(url_for('login'))
-    return render_template('convert.html')
+    print(session['rights'])
+    Sr = session['rights']
+    if ('c' in Sr) or ('C' in Sr) or ('R' in Sr) or ('r' in Sr) or \
+            ('u' in Sr) or ('U' in Sr) or ('d' in Sr) or ('D' in Sr):
+        admin_button = 'visible'
+
+    return render_template('convert.html', admin_button=admin_button)
 
 
 @app.route('/url_to_json', methods=['GET', 'POST'])
 def url_to_json():
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged']==False:
+    if session['logged'] == False:
         return redirect(url_for('login'))
 
     if request.method == 'POST':
@@ -352,7 +360,7 @@ def json_to_xml():
 
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged']==False:
+    if session['logged'] == False:
         return redirect(url_for('login'))
 
     json = None
@@ -378,9 +386,9 @@ def json_to_xml():
             flash('No file part')
             return redirect(request.url)
 
-        if xml.filename == '':
-            flash('Upload a xml file')
-            return redirect(request.url)
+        # if xml.filename == '':
+        #    flash('Upload a xml file')
+        #    return redirect(request.url)
 
         if xml and not allowed_file(xml.filename):
             flash('wrong file type')
