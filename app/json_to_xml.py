@@ -5,9 +5,13 @@ import Function as F
 import xml.etree.ElementTree as ET
 
 
-def Json_to_xml(_json_name, _xml_name, _xml_file, _id="mxb"):
+def Json_to_xml(_json_name, _xml_name, _xml_file , _id):
     if _id == '':
         _id = "mxb"
+
+    if _xml_file.stream.read().decode('UTF-8') == '':
+        _xml_file = 'New_max4.xml'
+
     tree = ET.parse(_xml_file)
     root = tree.getroot()
 
