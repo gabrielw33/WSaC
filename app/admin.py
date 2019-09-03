@@ -124,7 +124,7 @@ def login():
             session['username'] = login
             session['rights'] = kursor['rights']
             session['logged'] = True
-            session['Show_cliked']=False
+            session['Show_cliked'] = False
             return redirect(url_for('convert'))
         else:
             error = 'wrong password'
@@ -137,7 +137,7 @@ def logoff():
     session['logged'] = False
     session['rights'] = None
     session['user_name'] = None
-    session['Show_cliked']=False
+    session['Show_cliked'] = False
     return redirect(url_for('login'))
 
 
@@ -174,21 +174,23 @@ def admin():
         d = '1'
         bd = ''
 
-    if session['Show_cliked'] == True:
-        if session['read'] == False:
+    if session['Show_cliked']:
+        if not session['read']:
             return redirect(url_for('read_db_on_begin'))
         use = session['db']
 
-        return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd, use=use, len=len(use))
+        return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, \
+            br=br, bu=bu, bd=bd, use=use, len=len(use))
 
-    return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, br=br, bu=bu, bd=bd, len=0)
+    return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, \
+        br=br, bu=bu, bd=bd, len=0)
 
 
 @app.route('/create',  methods=['GET', 'POST'])
 def create():
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged'] == False:
+    if not session['logged']:
         return redirect(url_for('login'))
 
     if ('c' in session['rights']) or ('C' in session['rights']):
@@ -207,11 +209,11 @@ def create():
 
         password = savedata.encrypthash(password)
         user_name = savedata.encryptlog(user_name, Sacredcode)
-        
+
         try:
             db = get_db()
             db.execute('INSERT INTO users VALUES (?,?,?,?);',
-                        [None, user_name, password, rights])
+                       [None, user_name, password, rights])
             db.commit()
         except sqlite3.IntegrityError:
             flash('such user already exists')
@@ -253,7 +255,7 @@ def read():
         return redirect(url_for('login'))
 
     if ('r' in session['rights']) or ('R' in session['rights']):
-        
+
         if session['Show_cliked']:
             session['Show_cliked'] = False
         else:
@@ -342,7 +344,7 @@ def convert():
 def url_to_json():
     if 'logged' not in session:
         session['logged'] = False
-    if  not session['logged']:
+    if not session['logged']:
         return redirect(url_for('login'))
 
     if request.method == 'POST':
