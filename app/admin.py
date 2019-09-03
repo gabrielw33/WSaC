@@ -179,11 +179,11 @@ def admin():
             return redirect(url_for('read_db_on_begin'))
         use = session['db']
 
-        return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, \
-            br=br, bu=bu, bd=bd, use=use, len=len(use))
+        return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc,
+                               br=br, bu=bu, bd=bd, use=use, len=len(use))
 
-    return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc, \
-        br=br, bu=bu, bd=bd, len=0)
+    return render_template('admin.html', c=c, r=r, u=u, d=d, bc=bc,
+                           br=br, bu=bu, bd=bd, len=0)
 
 
 @app.route('/create',  methods=['GET', 'POST'])
@@ -227,7 +227,7 @@ def create():
 def read_db_on_begin():
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged'] == False:
+    if not session['logged']:
         return redirect(url_for('login'))
 
     db = get_db()
@@ -251,7 +251,7 @@ def read_db_on_begin():
 def read():
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged'] == False:
+    if not session['logged']:
         return redirect(url_for('login'))
 
     if ('r' in session['rights']) or ('R' in session['rights']):
@@ -286,12 +286,13 @@ def update():
         db = get_db()
         if name != '':
             db.execute(
-                'UPDATE users SET user_name = ?  WHERE user_name = ?;', [name, e_name])
+                'UPDATE users SET user_name = ?  WHERE user_name = ?;',
+                [name, e_name])
             db.commit()
 
         if password != '':
-            db.execute('UPDATE users SET user_password = ?  WHERE user_name = ?;', [
-                password, e_name])
+            db.execute('UPDATE users SET user_password = ?  WHERE user_name = ?;',
+                       [password, e_name])
             db.commit()
 
         if right != '':
