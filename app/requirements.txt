@@ -1,1 +1,6 @@
 flask == 1.1.1
+passlib
+pycrypto
+pybase64
+pysqlite3
+requests

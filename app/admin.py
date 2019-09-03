@@ -1,8 +1,6 @@
 import base64
-import hashlib as hs
 import os
 import sqlite3
-from getpass import getpass
 import passlib.hash as ps
 from Crypto.Cipher import AES
 from flask import (Flask, flash, g, redirect, render_template, request,
@@ -10,7 +8,7 @@ from flask import (Flask, flash, g, redirect, render_template, request,
 from json_to_xml import Json_to_xml
 from url_to_json import Url_to_json
 
-Show_cliked = False
+
 f = open('SC.txt')
 Sacredcode = str(f.read())
 f.close()
@@ -126,6 +124,7 @@ def login():
             session['username'] = login
             session['rights'] = kursor['rights']
             session['logged'] = True
+            session['Show_cliked']=False
             return redirect(url_for('convert'))
         else:
             error = 'wrong password'
@@ -138,6 +137,7 @@ def logoff():
     session['logged'] = False
     session['rights'] = None
     session['user_name'] = None
+    session['Show_cliked']=False
     return redirect(url_for('login'))
 
 
@@ -174,7 +174,7 @@ def admin():
         d = '1'
         bd = ''
 
-    if Show_cliked == True:
+    if session['Show_cliked'] == True:
         if session['read'] == False:
             return redirect(url_for('read_db_on_begin'))
         use = session['db']
@@ -201,22 +201,20 @@ def create():
             flash('complete the required forms')
             return redirect(url_for('admin'))
 
-        if user_name in session['db']:
-            flash('complete the required forms')
+        if password != re_password:
+            flash('passwords are not the same')
             return redirect(url_for('admin'))
 
-        if password == re_password:
-
-            password = savedata.encrypthash(password)
-            user_name = savedata.encryptlog(user_name, Sacredcode)
-            try:
-                db = get_db()
-                db.execute('INSERT INTO users VALUES (?,?,?,?);',
-                           [None, user_name, password, rights])
-                db.commit()
-            except sqlite3.IntegrityError:
-                flash('such user already exists')
-                return redirect(url_for('admin'))
+        password = savedata.encrypthash(password)
+        user_name = savedata.encryptlog(user_name, Sacredcode)
+        try:
+            db = get_db()
+            db.execute('INSERT INTO users VALUES (?,?,?,?);',
+                        [None, user_name, password, rights])
+            db.commit()
+        except sqlite3.IntegrityError:
+            flash('such user already exists')
+            return redirect(url_for('admin'))
 
         return redirect(url_for('read_db_on_begin'))
     return redirect(url_for('admin'))
@@ -254,11 +252,11 @@ def read():
         return redirect(url_for('login'))
 
     if ('r' in session['rights']) or ('R' in session['rights']):
-        global Show_cliked
-        if Show_cliked == True:
-            Show_cliked = False
+        
+        if session['Show_cliked'] == True:
+            session['Show_cliked'] = False
         else:
-            Show_cliked = True
+            session['Show_cliked'] = True
 
     return redirect(url_for('admin'))
 
@@ -400,10 +398,6 @@ def json_to_xml():
             flash('No file part')
             return redirect(request.url)
 
-        # if xml.filename == '':
-        #    flash('Upload a xml file')
-        #    return redirect(request.url)
-
         if xml and not allowed_file(xml.filename):
             flash('wrong file type')
             return redirect(request.url)
@@ -419,4 +413,4 @@ def json_to_xml():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")

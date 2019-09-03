@@ -13,8 +13,9 @@
     height: auto;
     padding: 30px;
     align-items: center;
-    background-color: rgb(223, 153, 130);
+    background-color: rgb(58, 102, 184);
     border-radius: 20px;
+    border: 2px solid #000033;
 }
 #Read{
 
@@ -23,8 +24,9 @@
     padding: 20px;
     width: auto;
     height: auto;
-    background-color:rgb(223, 153, 130);;
+    background-color:rgb(58, 102, 184);
     border-radius: 20px;
+    border: 2px solid #000033;
 }
 
 #Update{    margin-left: 20px;
@@ -35,8 +37,9 @@
     width: 300px;
     height: auto;
     padding: 30px;
-    background-color: rgb(223, 153, 130);;
+    background-color:rgb(58, 102, 184);
     border-radius: 20px;
+    border: 2px solid #000033;
 
 }
 
@@ -45,14 +48,25 @@
     width: 300px;
     padding: 30px;
     height: auto;
-    background-color: rgb(223, 153, 130);;
+    background-color: rgb(58, 102, 184);
     border-radius: 20px;
+    border: 2px solid #000033;
 
 }
 
 button{
-    width: 200px;
-
+    margin:5px;
+    width: 150px;
+    background-color: rgb(218, 218, 218);
+    border-radius: 6px;
+    font-size: 14px;
+    color: black;
+    border: 2px solid #000033;
+    padding: 10px 20px;
+    transition-duration: 0.3s;
+}
+#del{
+    background-color: red;
 }
 .error {
     font-family: monospace;

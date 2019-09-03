@@ -12,11 +12,16 @@
 </head>
 
 <body>
-    <p>
-        Username: {{ session['username'] }}
-        <br>
-        Rights: {{ session['rights'] }}
-    </p>
+    <div class ="head">
+        <p>
+            Username: {{ session['username'] }}
+            <br>
+            Rights: {{ session['rights'] }}
+        </p>
+    </div>
+    <div class="head" >
+        <p> C-create R-read U-update D-delete </p>
+    </div>
 
     <div class="error">
         {% for message in get_flashed_messages() %}
@@ -33,8 +38,8 @@
 
             <form role="form" method="POST" action="{{ url_for('create') }}">
                 <input name="new_user" type="text" placeholder="new user" value='{{ cos }}'><br>
-                <input name="new_password" type="text" placeholder="new password"> <br>
-                <input name="re_password" type="text" placeholder="repeat password"> <br>
+                <input name="new_password" type="password" placeholder="new password"> <br>
+                <input name="re_password" type="password" placeholder="repeat password"> <br>
                 <input name="rights" type="text" placeholder="Right(CRUD)"> <br>
 
                 <button name="reg" type="submit" class="reg" {{bc}}>Create</button>
@@ -48,9 +53,8 @@
             <form role="form" method="POST" action="{{ url_for('update') }}">
                 <input name="eduser" type="text" placeholder="user name"><br>
                 <input name="name_user" type="text" placeholder="new user name"> <br>
-                <input name="password_user" type="text" placeholder="new password"> <br>
+                <input name="password_user" type="password" placeholder="new password"> <br>
                 <input name="rights" type="text" placeholder="new Rights(CRUD)"> <br>
-
                 <button name="Edit" type="submit" class="reg" {{ bu }}>Edit</button>
             </form>
         </div>
@@ -61,7 +65,7 @@
             <form role="form" method="POST" action="{{ url_for('delete') }}">
                 <input name="name_user" type="text" placeholder="username"><br>
 
-                <button name="del" type="submit" class="reg" {{bd}}>Delete</button>
+                <button id="del" name="del" type="submit" class="reg" {{bd}}>Delete</button>
             </form>
         </div>
 
