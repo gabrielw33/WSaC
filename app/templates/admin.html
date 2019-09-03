@@ -75,7 +75,7 @@
     </div>
     <div id=Read style="opacity:{{ r }}">
         <h2>
-            Show usrs
+            Show users
         </h2>
         <form role="form" method="POST" action="{{ url_for('read') }}">
             <button name="Show" type="submit" class="reg" {{br}}>Show</button>
@@ -93,7 +93,7 @@
             <tr>
                 <td> {{use[x][0]}} </td>
                 <td> {{use[x][1]}} </td>
-                <td> {{ use[x][2]}} </dr> <br>
+                <td> {{use[x][2]}} </dr> <br>
             </tr>
             {% endfor %}
 

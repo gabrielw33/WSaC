@@ -92,7 +92,7 @@ def catch_all(path):
 def login():
 
     if 'logged' in session:
-        if session['logged'] == True:
+        if session['logged']:
             return redirect(url_for('convert'))
     error = ''
     session['read'] = False
@@ -146,7 +146,7 @@ def admin():
 
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged'] == False:
+    if not session['logged']:
         return redirect(url_for('login'))
 
     c = '0.4'
@@ -207,6 +207,7 @@ def create():
 
         password = savedata.encrypthash(password)
         user_name = savedata.encryptlog(user_name, Sacredcode)
+        
         try:
             db = get_db()
             db.execute('INSERT INTO users VALUES (?,?,?,?);',
@@ -253,7 +254,7 @@ def read():
 
     if ('r' in session['rights']) or ('R' in session['rights']):
         
-        if session['Show_cliked'] == True:
+        if session['Show_cliked']:
             session['Show_cliked'] = False
         else:
             session['Show_cliked'] = True
@@ -303,7 +304,7 @@ def update():
 def delete():
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged'] == False:
+    if not session['logged']:
         return redirect(url_for('login'))
 
     if ('d' in session['rights']) or ('D' in session['rights']):
@@ -326,7 +327,7 @@ def convert():
     if 'logged' not in session:
         session['logged'] = False
 
-    if session['logged'] == False:
+    if not session['logged']:
         return redirect(url_for('login'))
 
     Sr = session['rights']
@@ -341,7 +342,7 @@ def convert():
 def url_to_json():
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged'] == False:
+    if  not session['logged']:
         return redirect(url_for('login'))
 
     if request.method == 'POST':
@@ -372,7 +373,7 @@ def json_to_xml():
 
     if 'logged' not in session:
         session['logged'] = False
-    if session['logged'] == False:
+    if not session['logged']:
         return redirect(url_for('login'))
 
     json = None
